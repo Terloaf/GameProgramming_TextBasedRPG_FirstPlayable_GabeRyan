@@ -69,7 +69,11 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             if (File.Exists("mapData.txt"))
             {
                 map = File.ReadAllLines("mapData.txt");
-
+                for(int i = 0; i < map.Length; i++)
+                {
+                    Console.WriteLine(map[i]);
+                }
+                
                 
             }
         }
