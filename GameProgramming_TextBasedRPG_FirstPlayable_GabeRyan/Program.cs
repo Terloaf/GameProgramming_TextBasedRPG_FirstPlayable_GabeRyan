@@ -70,7 +70,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             {
                 map = File.ReadAllLines("mapData.txt");
 
-                Console.WriteLine(map);
+                
             }
         }
         //static void DisplayMap()
