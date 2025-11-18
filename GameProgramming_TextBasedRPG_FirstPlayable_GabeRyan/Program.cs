@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,7 +51,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-
+            
             
             while (Playing == true)
             {
@@ -61,6 +63,8 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 
                 Thread.Sleep(17);
 
+                Console.SetCursorPosition(28, 0);
+                
             }
             
         }
@@ -68,28 +72,38 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         {
             if (File.Exists("mapData.txt"))
             {
+                
                 map = File.ReadAllLines("mapData.txt");
-                for(int i = 0; i < map.Length; i++)
+                
+                for (int i = 0; i < map.Length; i++)
                 {
+                    Console.SetCursorPosition(1, 1 + i);
                     Console.WriteLine(map[i]);
-                }
-                
-                
-            }
-        }
-        //static void DisplayMap()
-        //{
-        //    for (int mapRow = 0; mapRow < map.GetLength(0); mapRow++)
-        //    {
-        //        for(int mapColumn = 0; mapColumn < map.GetLength(1); mapColumn++)
-        //        {
-        //            Console.SetCursorPosition(mapColumn, mapRow);
-        //            Console.Write(map[mapRow,mapColumn]);
                     
-        //        }
-        //    }
-            
-        //}
+                }
+
+
+                for(int BoarderX = 0; BoarderX < map[0].Length; BoarderX++)
+                {
+                    Console.SetCursorPosition(BoarderX + 1, 0);
+                    Console.Write(boarder[0]);
+                    Console.SetCursorPosition(BoarderX + 1, map.Length + 1);
+                    Console.Write(boarder[0]);
+                }
+
+                for(int BoarderY = 0; BoarderY < map.Length; BoarderY++)
+                {
+                    Console.SetCursorPosition(0,BoarderY + 1);
+                    Console.Write(boarder[1]);
+                    Console.SetCursorPosition(map[0].Length + 1,BoarderY + 1);
+                    Console.Write(boarder[1]);
+                }
+            }
+
+            Console.Write("\n");
+
+        }
+        
 
         static void PlayerHandler()
         {
@@ -109,55 +123,174 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             playerXpos += playerXinput;
             playerYpos += playerYinput;
 
-            
+
 
             // Checks if player is trying to go into water or trees
 
-            if (playerYinput == -1 && map[playerYpos][playerXpos] == '~')
-            {
-                playerYpos += 1;
-                
-
-
-            }
-            else if (playerYinput == 1 && map[playerYpos][playerXpos] == '~')
-            {
-                playerYpos -= 1;
-            }
-            else if (playerXinput == -1 && map[playerYpos][playerXpos] == '~')
-            {
-                playerXpos += 1;
-            }
-            else if (playerXinput == 1 && map[playerYpos][playerXpos] == '~')
-            {
-                playerXpos -= 1;
-            }
-
-            else if (playerYinput == -1 && map[playerYpos][playerXpos] == '^')
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '~')
             {
                 playerYpos += 1;
 
 
 
             }
-            else if (playerYinput == 1 && map[playerYpos][playerXpos] == '^')
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '~')
             {
                 playerYpos -= 1;
             }
-            else if (playerXinput == -1 && map[playerYpos][playerXpos] == '^')
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '~')
             {
                 playerXpos += 1;
+
+               
             }
-            else if (playerXinput == 1 && map[playerYpos][playerXpos] == '^')
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '~')
             {
                 playerXpos -= 1;
             }
 
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            {
+                playerYpos += 1;
 
 
-            // Checks border of the map
 
-            
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            {
+                playerYpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            {
+                playerXpos += 1;
+            }
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            {
+                playerXpos -= 1;
+            }
+            // cage boarders
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            {
+                playerXpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            {
+                playerXpos += 1;
+            }
+
+
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            {
+                playerYpos += 1;
+            }
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┘')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┘')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┘')
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┘')
+            {
+                playerYpos += 1;
+            }
+
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            {
+                playerYpos += 1;
+            }
+
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            {
+                playerYpos += 1;
+            }
+
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            {
+                playerYpos += 1;
+            }
+
+            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == ' ' || map[playerYpos - 1][playerXpos - 1] == '║')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == 0)
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == 0)
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == 0)
+            {
+                playerYpos += 1;
+            }
+
+            //map boarder
+
+
 
         }
 
