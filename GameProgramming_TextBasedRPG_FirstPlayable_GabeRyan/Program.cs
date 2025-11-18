@@ -271,23 +271,6 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 playerYpos += 1;
             }
 
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == ' ' || map[playerYpos - 1][playerXpos - 1] == '║')
-            {
-                playerXpos -= 1;
-            }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == 0)
-            {
-                playerXpos += 1;
-            }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == 0)
-            {
-                playerYpos -= 1;
-            }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == 0)
-            {
-                playerYpos += 1;
-            }
-
             //map boarder
 
 
