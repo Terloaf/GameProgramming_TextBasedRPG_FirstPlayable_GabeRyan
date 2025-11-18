@@ -63,7 +63,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 
                 Thread.Sleep(17);
 
-                Console.SetCursorPosition(28, 0);
+               
                 
             }
             
@@ -97,6 +97,8 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                     Console.Write(boarder[1]);
                     Console.SetCursorPosition(map[0].Length + 1,BoarderY + 1);
                     Console.Write(boarder[1]);
+
+                   
                 }
             }
 
@@ -123,7 +125,27 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             playerXpos += playerXinput;
             playerYpos += playerYinput;
 
+            if (playerXinput == -1 && playerXpos == 0)
+            {
+                playerXpos += 1;
+                return;
+            }
+            if (playerXinput == +1 && playerXpos == map[0].Length + 1)
+            {
+                playerXpos -= 1;
+                return;
+            }
 
+            if (playerYinput == -1 && playerYpos == 0)
+            {
+                playerYpos += 1;
+                return;
+            }
+            if (playerYinput == +1 && playerYpos == map.Length + 1)
+            {
+                playerYpos -= 1;
+                return;
+            }
 
             // Checks if player is trying to go into water or trees
 
@@ -270,6 +292,8 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             {
                 playerYpos += 1;
             }
+
+            
 
             //map boarder
 
