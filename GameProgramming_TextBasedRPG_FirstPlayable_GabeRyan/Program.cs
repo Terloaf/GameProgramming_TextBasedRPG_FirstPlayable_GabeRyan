@@ -22,10 +22,22 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         static int playerYinput = 0;
         static int playerXinput = 0;
 
+        static int EnemyDirectionY = 0;
+        static int EnemyDirectionX = 0;
+        static int EnemyXpos = 20;
+        static int EnemyYpos = 3;
+        static int EnemoveCount = 0;
+
         static bool Playing = true;
+        static bool EnemyMove = true;
+
+        static int mapOffset = 1;
+        static int enemyOffset = 2;
 
         static string[] map;
+
         
+
 
 
         //static char[,] map = new char[,]
@@ -50,6 +62,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
         static void Main(string[] args)
         {
+            
             Console.CursorVisible = false;
             
             
@@ -57,14 +70,17 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             {
                 
                 PlayerHandler();
+                EnemyHandler();
                 PlayerDraw();
+                
                 DisplayMap();
-                
-                
+                EnemyDraw();
+
+
                 Thread.Sleep(17);
 
-               
-                
+
+                Console.Write(enemyHealth);
             }
             
         }
@@ -74,28 +90,36 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             {
                 
                 map = File.ReadAllLines("mapData.txt");
-                
+
                 for (int i = 0; i < map.Length; i++)
                 {
-                    Console.SetCursorPosition(1, 1 + i);
+                    Console.SetCursorPosition(1, i + mapOffset);
                     Console.WriteLine(map[i]);
-                    
+
+                    // makes it so theres no flickering
+                    if (map[playerYpos - mapOffset][playerXpos - mapOffset] == '`')
+                    {
+                        Console.SetCursorPosition(playerXpos, playerYpos);
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write('O');
+                        Console.ResetColor();
+                    }
                 }
 
 
                 for(int BoarderX = 0; BoarderX < map[0].Length; BoarderX++)
                 {
-                    Console.SetCursorPosition(BoarderX + 1, 0);
+                    Console.SetCursorPosition(BoarderX + mapOffset, 0);
                     Console.Write(boarder[0]);
-                    Console.SetCursorPosition(BoarderX + 1, map.Length + 1);
+                    Console.SetCursorPosition(BoarderX + mapOffset, map.Length + mapOffset);
                     Console.Write(boarder[0]);
                 }
 
                 for(int BoarderY = 0; BoarderY < map.Length; BoarderY++)
                 {
-                    Console.SetCursorPosition(0,BoarderY + 1);
+                    Console.SetCursorPosition(0,BoarderY + mapOffset);
                     Console.Write(boarder[1]);
-                    Console.SetCursorPosition(map[0].Length + 1,BoarderY + 1);
+                    Console.SetCursorPosition(map[0].Length + mapOffset,BoarderY + mapOffset);
                     Console.Write(boarder[1]);
 
                    
@@ -103,6 +127,8 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             }
 
             Console.Write("\n");
+
+            
 
         }
         
@@ -130,7 +156,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 playerXpos += 1;
                 return;
             }
-            if (playerXinput == +1 && playerXpos == map[0].Length + 1)
+            if (playerXinput == +1 && playerXpos == map[0].Length + mapOffset)
             {
                 playerXpos -= 1;
                 return;
@@ -141,7 +167,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 playerYpos += 1;
                 return;
             }
-            if (playerYinput == +1 && playerYpos == map.Length + 1)
+            if (playerYinput == +1 && playerYpos == map.Length + mapOffset)
             {
                 playerYpos -= 1;
                 return;
@@ -149,163 +175,224 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
             // Checks if player is trying to go into water or trees
 
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '~')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '~')
             {
                 playerYpos += 1;
-
-
-
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '~')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '~')
             {
                 playerYpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '~')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '~')
             {
                 playerXpos += 1;
 
-               
             }
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '~')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '~')
             {
                 playerXpos -= 1;
             }
 
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '^')
             {
                 playerYpos += 1;
-
-
-
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '^')
             {
                 playerYpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '^')
             {
                 playerXpos += 1;
             }
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '^')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '^')
             {
                 playerXpos -= 1;
             }
             // cage boarders
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '│')
             {
                 playerXpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '│')
             {
                 playerXpos += 1;
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '│')
             {
                 playerXpos -= 1;
             }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '│')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '│')
             {
                 playerXpos += 1;
             }
 
-
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '└')
             {
                 playerXpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '└')
             {
                 playerXpos += 1;
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '└')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '└')
             {
                 playerYpos -= 1;
             }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '└')
-            {
-                playerYpos += 1;
-            }
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┘')
-            {
-                playerXpos -= 1;
-            }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┘')
-            {
-                playerXpos += 1;
-            }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┘')
-            {
-                playerYpos -= 1;
-            }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┘')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '└')
             {
                 playerYpos += 1;
             }
 
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┘')
             {
                 playerXpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┘')
             {
                 playerXpos += 1;
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┘')
             {
                 playerYpos -= 1;
             }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┌')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┘')
             {
                 playerYpos += 1;
             }
 
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┌')
             {
                 playerXpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┌')
             {
                 playerXpos += 1;
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┌')
             {
                 playerYpos -= 1;
             }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '┐')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┌')
             {
                 playerYpos += 1;
             }
 
-            if (playerXinput == 1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┐')
             {
                 playerXpos -= 1;
             }
-            if (playerXinput == -1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┐')
             {
                 playerXpos += 1;
             }
-            if (playerYinput == 1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┐')
             {
                 playerYpos -= 1;
             }
-            if (playerYinput == -1 && map[playerYpos - 1][playerXpos - 1] == '─')
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '┐')
             {
                 playerYpos += 1;
             }
+
+            if (playerXinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '─')
+            {
+                playerXpos -= 1;
+            }
+            if (playerXinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '─')
+            {
+                playerXpos += 1;
+            }
+            if (playerYinput == 1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '─')
+            {
+                playerYpos -= 1;
+            }
+            if (playerYinput == -1 && map[playerYpos - mapOffset][playerXpos - mapOffset] == '─')
+            {
+                playerYpos += 1;
+            }
+
+            if (playerXpos == EnemyXpos && playerYpos == EnemyYpos)
+            {
+                enemyHealth -= 1;
+
+                if (enemyHealth > 1)
+                {
+                    enemyHealth = 0;
+                }
+
+
+            }
+
+        }
+
+        static void EnemyHandler()
+        {
+            EnemoveCount += 1;
+
+            EnemyDirectionX = 0;
+            EnemyDirectionY = 0;
 
             
+            if (EnemoveCount == 20)
+            {
+                
 
-            //map boarder
+                if (playerXpos > EnemyXpos)
+                {
+                    EnemyDirectionX += 1;
+                }
 
+                if (playerXpos < EnemyXpos)
+                {
+                    EnemyDirectionX -= 1;
+                }
+                if (playerYpos > EnemyYpos)
+                {
+                    EnemyDirectionY += 1;
+                }
 
+                if (playerYpos < EnemyYpos)
+                {
+                    EnemyDirectionY -= 1;
+                }
+
+                if (map[EnemyYpos + EnemyDirectionY - mapOffset][EnemyXpos + EnemyDirectionX - mapOffset] != '`')
+                {
+                    EnemoveCount = 0;
+                    return;
+
+                }
+
+                EnemyXpos += EnemyDirectionX;
+                EnemyYpos += EnemyDirectionY;
+
+                EnemoveCount = 0;
+            }
+            
 
         }
 
         static void PlayerDraw()
         {
             
-            Console.SetCursorPosition(playerXpos, playerYpos);
+            Console.SetCursorPosition(playerXpos,playerYpos);
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("O");
+            Console.ResetColor();
+
+            Console.SetCursorPosition(0, 0);
+
+           
+        }
+
+        static void EnemyDraw()
+        {
+           
+            Console.SetCursorPosition(EnemyXpos, EnemyYpos);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("X");
+            Console.ResetColor();
 
             Console.SetCursorPosition(0, 0);
         }
