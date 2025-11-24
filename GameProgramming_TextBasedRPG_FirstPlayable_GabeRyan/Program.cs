@@ -14,7 +14,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
     {
         static Random random = new Random();
 
-        static int playerHealth = 100;
+        static int playerHealth = 3;
         static int enemyHealth = 3;
         static int enemyHealth2 = 6;
 
@@ -32,10 +32,15 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         static int EnemyDirectionX2 = 0;
 
         static int EnemyXpos = 20;
-        static int EnemyXpos2 = 20;
+        static int EnemyXpos2 = 3;
 
         static int EnemyYpos = 3;
         static int EnemyYpos2 = 8;
+
+        static int EnemyStartXpos = 20;
+        static int EnemyStartYpos = 3;
+        static int EnemyStartXpos2 = 3;
+        static int EnemyStartYpos2 = 8;
 
         static int CollectableXpos = 0;
         static int CollectableYpos = 0;
@@ -47,10 +52,13 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
         static int EnemoveCount2 = 0;
 
-        static int CollectableCount = 0;
+        static int CollectableOnMap = 0;
+        static int Collectables = 0;
 
         static bool Playing = true;
         static bool CollectChecker = true;
+        static bool EnemyAlive = true;
+        static bool Enemy2Alive = true;
 
         static int mapOffset = 1;
 
@@ -104,10 +112,15 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
                 Thread.Sleep(17);
 
-
-                Console.Write(enemyHealth);
             }
-            
+
+            Console.Clear();
+            Console.SetCursorPosition(5, 20);
+            Console.WriteLine("GameOver");
+            Console.ReadKey();
+            Console.ReadKey();
+
+
         }
         static void DisplayMap()
         {
@@ -336,18 +349,69 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             {
                 playerYpos += 1;
             }
-
-            if (playerXpos == EnemyXpos && playerYpos == EnemyYpos)
+            
+            if (map[playerYpos - mapOffset][playerXpos - mapOffset] == '#')
             {
-                enemyHealth -= 1;
+                playerHealth -= 1;
+                playerXpos = 3;
+                playerYpos = 3;
+                EnemyXpos = EnemyStartXpos;
+                EnemyXpos2 = EnemyStartXpos2;
+                EnemyYpos = EnemyStartYpos;
+                EnemyYpos2 = EnemyStartYpos2;
+            }
+            if (EnemyAlive == true)
+            {
+                if (playerXpos == EnemyXpos && playerYpos == EnemyYpos)
+                {
+                    enemyHealth -= 1;
 
-                if (enemyHealth > 1)
+                    EnemyXpos = EnemyStartXpos;
+                    EnemyYpos = EnemyStartYpos;
+
+
+                }
+                if (enemyHealth == 0)
+                {
+                    EnemyAlive = false;
+                }
+                if (enemyHealth < 1)
                 {
                     enemyHealth = 0;
+                    EnemyAlive = false;
                 }
 
+                if (playerHealth <= 0)
+                {
+                    Playing = false;
 
+                }
             }
+            
+            if (Enemy2Alive == true)
+            {
+                if (playerXpos == EnemyXpos2 && playerYpos == EnemyYpos2)
+                {
+                    enemyHealth2 -= 1;
+
+                    EnemyXpos2 = EnemyStartXpos2;
+                    EnemyYpos2 = EnemyStartYpos2;
+
+                   
+
+
+                }
+                if (enemyHealth2 == 0)
+                {
+                    Enemy2Alive = false;
+                }
+                if (enemyHealth2 < 1)
+                {
+                    enemyHealth2 = 0;
+                    Enemy2Alive = false;
+                }
+            }
+           
 
         }
 
@@ -438,12 +502,49 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 EnemoveCount2 = 0;
             }
 
+            if(EnemyXpos == EnemyXpos2 && EnemyYpos == EnemyYpos2)
+            {
+                EnemyXpos = EnemyStartXpos;
+                EnemyXpos2 = EnemyStartXpos2;
+
+                EnemyYpos = EnemyStartYpos;
+                EnemyYpos2 = EnemyStartYpos2;
+
+            }
+
+            if (playerXpos == EnemyXpos && playerYpos == EnemyYpos)
+            {
+                playerHealth -= 1;
+                playerXpos = 3;
+                playerYpos = 3;
+                EnemyXpos = EnemyStartXpos;
+                EnemyXpos2 = EnemyStartXpos2;
+                EnemyYpos = EnemyStartYpos;
+                EnemyYpos2 = EnemyStartYpos2;
+            }
+            if (playerXpos == EnemyXpos2 && playerYpos == EnemyYpos2)
+            {
+                playerHealth -= 1;
+                playerXpos = 3;
+                playerYpos = 3;
+                EnemyXpos = EnemyStartXpos;
+                EnemyXpos2 = EnemyStartXpos2;
+                EnemyYpos = EnemyStartYpos;
+                EnemyYpos2 = EnemyStartYpos2;
+            }
+            if (playerHealth <= 0)
+            {
+                Playing = false;
+                
+            }
         }
+
+
 
         static void CollectableHandler()
         {
             
-            if (CollectableCount == 0)
+            if (CollectableOnMap == 0)
             {
                 
                 CollectableXpos = random.Next(1, map[0].Length - mapOffset);
@@ -457,14 +558,14 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
                 
 
-                CollectableCount += 1;
+                CollectableOnMap += 1;
             }
             
 
             if (playerXpos == CollectableXpos && playerYpos == CollectableYpos)
             {
-                CollectableCount = 0;
-                CollectChecker = true;
+                CollectableOnMap = 0;
+                Collectables += 1;
             }
 
 
@@ -473,7 +574,8 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
         static void PlayerDraw()
         {
-            
+            Console.SetCursorPosition(30, 0);
+            Console.Write("Health: " + playerHealth);
             Console.SetCursorPosition(playerXpos,playerYpos);
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("O");
@@ -486,15 +588,28 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
         static void EnemyDraw()
         {
-           
-            Console.SetCursorPosition(EnemyXpos, EnemyYpos);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("X");
+            Console.SetCursorPosition(30, 2);
+            Console.Write("Enemy 1 Health: " + enemyHealth);
+
+            Console.SetCursorPosition(30, 3);
+            Console.Write("Enemy 2 Health: " + enemyHealth2);
+            if (EnemyAlive == true)
+            {
+                Console.SetCursorPosition(EnemyXpos, EnemyYpos);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("X");
+                Console.ResetColor();
+            }
 
 
-            Console.SetCursorPosition(EnemyXpos2, EnemyYpos2);
-            Console.Write("X");
-            Console.ResetColor();
+            if (Enemy2Alive == true)
+            {
+                Console.SetCursorPosition(EnemyXpos2, EnemyYpos2);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("X");
+                Console.ResetColor();
+            }
+            
 
             Console.SetCursorPosition(0, 0);
         }
@@ -507,6 +622,8 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             Console.Write("O");
             Console.ResetColor();
 
+            Console.SetCursorPosition(30, 4);
+            Console.Write("Collectables: " + Collectables);
             Console.SetCursorPosition(0, 0);
             
         }
