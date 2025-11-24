@@ -12,8 +12,11 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 {
     internal class Program
     {
+        static Random random = new Random();
+
         static int playerHealth = 100;
-        static int enemyHealth = 1;
+        static int enemyHealth = 3;
+        static int enemyHealth2 = 6;
 
 
         static int playerYpos = 3;
@@ -24,15 +27,32 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
         static int EnemyDirectionY = 0;
         static int EnemyDirectionX = 0;
+
+        static int EnemyDirectionY2 = 0;
+        static int EnemyDirectionX2 = 0;
+
         static int EnemyXpos = 20;
+        static int EnemyXpos2 = 20;
+
         static int EnemyYpos = 3;
+        static int EnemyYpos2 = 8;
+
+        static int CollectableXpos = 0;
+        static int CollectableYpos = 0;
+
+
+
+
         static int EnemoveCount = 0;
 
+        static int EnemoveCount2 = 0;
+
+        static int CollectableCount = 0;
+
         static bool Playing = true;
-        static bool EnemyMove = true;
+        static bool CollectChecker = true;
 
         static int mapOffset = 1;
-        static int enemyOffset = 2;
 
         static string[] map;
 
@@ -64,17 +84,22 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         {
             
             Console.CursorVisible = false;
-            
-            
+            if (File.Exists("mapData.txt"))
+            {
+                map = File.ReadAllLines("mapData.txt");
+            }
+               
+
             while (Playing == true)
             {
                 
                 PlayerHandler();
                 EnemyHandler();
+                CollectableHandler();
                 PlayerDraw();
-                
                 DisplayMap();
                 EnemyDraw();
+                CollectableDraw();
 
 
                 Thread.Sleep(17);
@@ -89,7 +114,7 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             if (File.Exists("mapData.txt"))
             {
                 
-                map = File.ReadAllLines("mapData.txt");
+                
 
                 for (int i = 0; i < map.Length; i++)
                 {
@@ -329,15 +354,18 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         static void EnemyHandler()
         {
             EnemoveCount += 1;
+            EnemoveCount2 += 1;
 
             EnemyDirectionX = 0;
             EnemyDirectionY = 0;
+            EnemyDirectionX2 = 0;
+            EnemyDirectionY2 = 0;
 
             
             if (EnemoveCount == 20)
             {
                 
-
+                // moves enemy 1
                 if (playerXpos > EnemyXpos)
                 {
                     EnemyDirectionX += 1;
@@ -360,18 +388,88 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 if (map[EnemyYpos + EnemyDirectionY - mapOffset][EnemyXpos + EnemyDirectionX - mapOffset] != '`')
                 {
                     EnemoveCount = 0;
-                    return;
+
+                    EnemyDirectionX = 0;
+                    EnemyDirectionY = 0;
 
                 }
+               
 
                 EnemyXpos += EnemyDirectionX;
                 EnemyYpos += EnemyDirectionY;
+                
 
                 EnemoveCount = 0;
             }
             
+            if(EnemoveCount2 == 20)
+            {
+                if (playerXpos > EnemyXpos2)
+                {
+                    EnemyDirectionX2 += 1;
+                }
+
+                if (playerXpos < EnemyXpos2)
+                {
+                    EnemyDirectionX2 -= 1;
+                }
+                if (playerYpos > EnemyYpos2)
+                {
+                    EnemyDirectionY2 += 1;
+                }
+
+                if (playerYpos < EnemyYpos2)
+                {
+                    EnemyDirectionY2 -= 1;
+                }
+
+                if (map[EnemyYpos2 + EnemyDirectionY2 - mapOffset][EnemyXpos2 + EnemyDirectionX2 - mapOffset] != '`')
+                {
+                    EnemoveCount2 = 0;
+                    EnemyDirectionX2 = 0;
+                    EnemyDirectionY2 = 0;
+
+                }
+
+
+                EnemyXpos2 += EnemyDirectionX2;
+                EnemyYpos2 += EnemyDirectionY2;
+
+                EnemoveCount2 = 0;
+            }
 
         }
+
+        static void CollectableHandler()
+        {
+            
+            if (CollectableCount == 0)
+            {
+                
+                CollectableXpos = random.Next(1, map[0].Length - mapOffset);
+                CollectableYpos = random.Next(1, map.Length - mapOffset);
+
+                if (map[CollectableYpos - mapOffset][CollectableXpos - mapOffset] != '`')
+                {
+
+                    CollectableHandler();     
+                }
+
+                
+
+                CollectableCount += 1;
+            }
+            
+
+            if (playerXpos == CollectableXpos && playerYpos == CollectableYpos)
+            {
+                CollectableCount = 0;
+                CollectChecker = true;
+            }
+
+
+        }
+            
 
         static void PlayerDraw()
         {
@@ -392,9 +490,25 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             Console.SetCursorPosition(EnemyXpos, EnemyYpos);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("X");
+
+
+            Console.SetCursorPosition(EnemyXpos2, EnemyYpos2);
+            Console.Write("X");
             Console.ResetColor();
 
             Console.SetCursorPosition(0, 0);
+        }
+
+        static void CollectableDraw()
+        {
+
+            Console.SetCursorPosition(CollectableXpos, CollectableYpos);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("O");
+            Console.ResetColor();
+
+            Console.SetCursorPosition(0, 0);
+            
         }
     }
 }
