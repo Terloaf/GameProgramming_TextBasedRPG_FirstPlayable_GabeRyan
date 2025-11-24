@@ -56,9 +56,11 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
         static int Collectables = 0;
 
         static bool Playing = true;
-        static bool CollectChecker = true;
+        static bool LoseState = false;
+        static bool WinState = false;
         static bool EnemyAlive = true;
         static bool Enemy2Alive = true;
+
 
         static int mapOffset = 1;
 
@@ -68,21 +70,6 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
 
 
-        //static char[,] map = new char[,]
-        //{
-        //    {'`','`','`','`','`','`','`','`','`','~','~','`','`','`','`','`','`','`','`','`','`','┌','─','─','┐', },
-        //    {'`','`','`','`','`','`','`','`','~','~','`','`','`','`','`','`','`','`','`','`','`','│','`','`','│', },
-        //    {'`','`','`','`','`','`','`','~','~','`','`','`','`','`','`','`','`','`','`','`','`','│','`','`','│', },
-        //    {'`','`','`','~','~','~','~','~','`','`','`','`','`','`','`','`','`','`','`','`','`','└','`','`','┘', },
-        //    {'~','`','~','~','~','~','~','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','^','^','`','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','^','^','^','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','`','^','^','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','`','`','^','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //    {'`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`', },
-        //};
 
         static string mapData = "mapData.txt";
 
@@ -113,12 +100,23 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 Thread.Sleep(17);
 
             }
-
-            Console.Clear();
-            Console.SetCursorPosition(5, 20);
-            Console.WriteLine("GameOver");
-            Console.ReadKey();
-            Console.ReadKey();
+            if (WinState == true)
+            {
+                Console.Clear();
+                Console.SetCursorPosition(5, 20);
+                Console.WriteLine("You Win!");
+                Console.ReadKey();
+                Console.ReadKey();
+            }
+            if (LoseState == true)
+            {
+                Console.Clear();
+                Console.SetCursorPosition(5, 20);
+                Console.WriteLine("GameOver");
+                Console.ReadKey();
+                Console.ReadKey();
+            }
+           
 
 
         }
@@ -383,8 +381,9 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
 
                 if (playerHealth <= 0)
                 {
+                    LoseState = true;
                     Playing = false;
-
+                    
                 }
             }
             
@@ -534,6 +533,15 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
             }
             if (playerHealth <= 0)
             {
+                LoseState = true;
+                Playing = false;
+                
+                
+            }
+
+            if (enemyHealth <= 0 && enemyHealth2 <= 0)
+            {
+                WinState = true;
                 Playing = false;
                 
             }
@@ -568,7 +576,11 @@ namespace GameProgramming_TextBasedRPG_FirstPlayable_GabeRyan
                 Collectables += 1;
             }
 
-
+            if (Collectables >= 5)
+            {
+                WinState = true;
+                Playing = false;
+            }
         }
             
 
